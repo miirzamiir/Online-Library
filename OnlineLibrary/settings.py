@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # SELF MADE
     'library',
+    'user',
     # DJANGO
     'django.contrib.admin',
     'django.contrib.auth',
