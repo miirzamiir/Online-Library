@@ -3,7 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django_countries.fields import CountryField
-from django.conf.global_settings import AUTH_USER_MODEL
+from django.conf import settings
 
 
 class Author(models.Model):
@@ -75,7 +75,7 @@ class Book(models.Model):
 
 class Rent(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    user = models.ForeignKey(to=AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     book = models.ForeignKey(to=Book, on_delete=models.DO_NOTHING)
     borrow_date = models.DateTimeField(default=datetime.now)
     return_date = models.DateTimeField(null=True)
