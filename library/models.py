@@ -8,17 +8,18 @@ from django.conf import settings
 
 class Author(models.Model):
     name = models.CharField(max_length=255)
-    nationality = CountryField()
-    rating = models.DecimalField(max_digits=3,
+    nationality = CountryField(null=True)
+    rating = models.DecimalField(null=True,
+                                 max_digits=3,
                                  decimal_places=2,
                                  validators=[
                                     MinValueValidator(0.00),
                                     MaxValueValidator(5.00)
                                     ]
                                 )
-    birth_date = models.PositiveSmallIntegerField()
+    birth_date = models.PositiveSmallIntegerField(null=True)
     is_alive = models.BooleanField(default=True)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -37,7 +38,7 @@ class Publisher(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -51,8 +52,9 @@ class Book(models.Model):
     author = models.ManyToManyField(to=Author, related_name='authors')
     translator = models.ManyToManyField(to=Author, related_name='translators')
     inventory = models.PositiveSmallIntegerField()
-    description = models.TextField()
-    rating = models.DecimalField(max_digits=3,
+    description = models.TextField(null=True)
+    rating = models.DecimalField(null=True,
+                                 max_digits=3,
                                  decimal_places=2,
                                  validators=[
                                     MinValueValidator(0.00),
