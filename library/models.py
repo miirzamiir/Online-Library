@@ -18,7 +18,7 @@ class Author(models.Model):
                                     ]
                                 )
     birth_date = models.PositiveSmallIntegerField(null=True)
-    is_alive = models.BooleanField(default=True)
+    is_alive = models.BooleanField(default=True, null=True)
     description = models.TextField(null=True)
 
     def __str__(self) -> str:
@@ -27,10 +27,9 @@ class Author(models.Model):
 
 class Publisher(models.Model):
     name = models.CharField(max_length=255)
-    website = models.CharField(max_length=100, null=True)
     address = models.CharField(max_length=255, null=True)
     telephone_number = models.CharField(max_length=30, null=True)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -45,7 +44,7 @@ class Category(models.Model):
 
 
 class Book(models.Model):
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     slug = models.SlugField()
     publisher = models.ForeignKey(to=Publisher, on_delete=models.CASCADE)
     category = models.ManyToManyField(to=Category)
@@ -86,4 +85,3 @@ class Rent(models.Model):
                                  decimal_places=2,
                                  validators=[MinValueValidator(0.00)]
                                 )
-    
