@@ -14,10 +14,10 @@ class UserManager(BaseUserManager):
 
         user = self.model(
                         username=kwargs.get('username'),
-                        password=kwargs.get('password'),
                         name=kwargs.get('name'),
                         email=email
                     )
+        user.set_password(kwargs.get('password'))
         user.save(using=self._db)
 
         return user
