@@ -23,7 +23,7 @@ class ManageUserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password',None)
-        user = super().update(**validated_data)
+        user = super().update(instance, validated_data)
         if password:
             user.set_password(password)
             user.save()
@@ -34,7 +34,7 @@ class ManageUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'name', 'password')
+        fields = ('id', 'username', 'name', 'email', 'password')
         read_only_fields = ('id',)
         write_only_fields = ('password',)
         extra_kwargs = {
