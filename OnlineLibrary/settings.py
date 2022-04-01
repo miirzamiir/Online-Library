@@ -137,6 +137,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
 
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES' : ('JWT',),
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : (

@@ -4,10 +4,6 @@ from .models import User
 from .serializers import CreateUserSerializer, ManageUserSerializer
 
 
-class TokenAPI():
-    pass
-
-
 class CreateUserAPI(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
@@ -16,6 +12,6 @@ class CreateUserAPI(CreateAPIView):
 class ManageUserAPI(RetrieveUpdateDestroyAPIView):
     
     serializer_class = ManageUserSerializer
-
+    
     def get_object(self):
         return self.request.user

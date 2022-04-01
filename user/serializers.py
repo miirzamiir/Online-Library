@@ -34,7 +34,7 @@ class ManageUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'name', 'password')
+        fields = ('id', 'username', 'name', 'password')
         read_only_fields = ('id',)
         write_only_fields = ('password',)
         extra_kwargs = {
