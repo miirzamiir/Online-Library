@@ -1,3 +1,4 @@
+from enum import unique
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser,PermissionsMixin
 from django.db import models
 
@@ -33,7 +34,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     name = models.CharField(max_length=255, null=True)
     is_superuser = models.BooleanField(default=False)
 
