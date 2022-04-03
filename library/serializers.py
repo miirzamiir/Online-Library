@@ -1,7 +1,7 @@
 from django_countries.serializer_fields import CountryField
 from django_countries.serializers import CountryFieldMixin
 from rest_framework.serializers import ModelSerializer
-from .models import Author, Publisher
+from .models import Author, Category, Publisher
 
 
 class AuthorSerializer(ModelSerializer):
@@ -18,3 +18,10 @@ class PublisherSerializer(ModelSerializer):
     class Meta:
         model = Publisher
         fields = ('id', 'name', 'address', 'telephone_number', 'description')
+
+
+class CategorySerializer(ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'description')
