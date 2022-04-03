@@ -2,9 +2,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 from .filters import AuthorFilter
-from .models import Author
+from .models import Author, Publisher
 from .permissions import IsAdminUserOrReadOnly
-from .serializers import AuthorSerializer
+from .serializers import AuthorSerializer, PublisherSerializer
 
 class AuthorViewSet(ModelViewSet):
     
@@ -14,3 +14,13 @@ class AuthorViewSet(ModelViewSet):
     filter_backends = (SearchFilter, DjangoFilterBackend)
     filterset_class = AuthorFilter
     search_fields = ('name',)
+
+
+class PublisherViewSet(ModelViewSet):
+
+    queryset = Publisher.objects.all()
+    serializer_class = PublisherSerializer
+    permission_classes = (IsAdminUserOrReadOnly,)
+    filter_backends = (SearchFilter,)
+    search_fields = ('name', 'telephone_number', 'address')
+
