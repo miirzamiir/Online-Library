@@ -24,6 +24,9 @@ class Author(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        ordering = ('name', 'birth_date')
+
 
 class Publisher(models.Model):
     name = models.CharField(max_length=255)
@@ -42,14 +45,17 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        ordering = ('name',)
+
 
 class Book(models.Model):
-    title = models.CharField(max_length=255)
-    slug = models.SlugField()
+    title = models.CharField(max_length=240)
+    slug = models.SlugField(max_length=255)
     publisher = models.ForeignKey(to=Publisher, on_delete=models.CASCADE)
-    category = models.ManyToManyField(to=Category)
-    author = models.ManyToManyField(to=Author, related_name='authors')
-    translator = models.ManyToManyField(to=Author, related_name='translators')
+    categories = models.ManyToManyField(to=Category)
+    authors = models.ManyToManyField(to=Author, related_name='authors')
+    translators = models.ManyToManyField(to=Author, related_name='translators', blank=True)
     inventory = models.PositiveSmallIntegerField()
     description = models.TextField(null=True)
     rating = models.DecimalField(null=True,
@@ -72,6 +78,21 @@ class Book(models.Model):
     
     def __str__(self) -> str:
         return self.name
+
+
+class Request(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    book = models.ForeignKey(to=Book, on_delete=models.DO_NOTHING)
+    date = models.DateTimeField(auto_now=True)
+    return_date = models.DateField(null=True, blank=True)
+    price_per_day =  models.DecimalField(max_digits=4,
+                                 decimal_places=2,
+                                 validators=[MinValueValidator(0.00)]
+                                )
+    
+
+
 
 
 class Rent(models.Model):
