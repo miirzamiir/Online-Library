@@ -1,9 +1,9 @@
-from venv import create
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from .filters import AuthorFilter, BookFilter
+from rest_framework.pagination import PageNumberPagination
+from .filters import AuthorFilter, BookFilter, RentFilter
 from .models import Author, Book, Category, Publisher, Rent, Request
 from .permissions import AdminUserCantPOST, IsAdminUserOrReadOnly
 from .serializers import AdminRequestSerializer, AuthorSerializer, BookSerializer, CategorySerializer,\
@@ -18,7 +18,8 @@ class AuthorViewSet(ModelViewSet):
     filter_backends = (SearchFilter, DjangoFilterBackend)
     filterset_class = AuthorFilter
     search_fields = ('name',)
-
+    pagination_class = PageNumberPagination
+    
 
 class PublisherViewSet(ModelViewSet):
 
@@ -45,6 +46,7 @@ class BookViewSet(ModelViewSet):
     filter_backends = (SearchFilter, DjangoFilterBackend)
     search_fields = ('title', 'authors__name', 'translators__name', 'publisher__name')
     filter_class = BookFilter
+    pagination_class = PageNumberPagination
 
     def get_serializer_class(self):
         
@@ -55,7 +57,6 @@ class BookViewSet(ModelViewSet):
 
 
 class RequestViewSet(ModelViewSet):
-
 
     permission_classes = (IsAuthenticated, AdminUserCantPOST)
 
@@ -76,6 +77,9 @@ class RequestViewSet(ModelViewSet):
             return RequestSerializer
 
         return GetRequestSerializer
+    
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class RentViewSet(ModelViewSet):
@@ -83,9 +87,11 @@ class RentViewSet(ModelViewSet):
     http_method_names = ['get', 'patch']
     serializer_class = RentSerializer
     permission_classes = [IsAuthenticated, IsAdminUserOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filter_class = RentFilter
 
     def get_queryset(self):
-        queryset = Rent.objects.all()
+        queryset = Rent.objects.select_related('request').order_by('-borrow_date')
         if self.request.user.is_superuser:
             return queryset
 

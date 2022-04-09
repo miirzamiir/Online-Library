@@ -51,7 +51,6 @@ class Category(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=240)
-    slug = models.SlugField(max_length=255)
     publisher = models.ForeignKey(to=Publisher, on_delete=models.CASCADE)
     categories = models.ManyToManyField(to=Category)
     authors = models.ManyToManyField(to=Author, related_name='authors')

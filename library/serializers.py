@@ -31,25 +31,12 @@ class CategorySerializer(ModelSerializer):
 
 class BookSerializer(ModelSerializer):
 
-    def create(self, validated_data):
-
-        validated_data['slug'] = str(validated_data['title']).strip().replace(' ','_')
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        
-        title = validated_data.get('title')
-        if title:
-            validated_data['slug'] = str(validated_data['title']).strip().replace(' ','_')
-
-        return super().update(instance, validated_data)
-
     class Meta:
         model = Book
         fields = (
                 'id', 'title', 'categories', 'publisher', 'authors',
-                'translators', 'inventory', 'rating', 'inventory',
-                'unit_price','price_per_day', 'date_of_publish', 'description'
+                'translators', 'inventory', 'rating','unit_price',
+                'price_per_day', 'date_of_publish', 'description'
             )
 
 
@@ -107,6 +94,33 @@ class AdminRequestSerializer(ModelSerializer):
         }
 
 
+class RentSerializer(ModelSerializer):
+    
+    def get_total_price(self, instance):
+        
+        borrow_date = instance.borrow_date.date()
+        price = instance.price_per_day
+
+        if instance.is_returned:
+            return_date = instance.return_date.date()
+
+            return price*((return_date-borrow_date).days+1)
+
+        now = datetime.now().date()
+        return  price*((now-borrow_date).days+1)
+
+
+    request = GetRequestSerializer()
+    total_price = serializers.SerializerMethodField()
+   
+   
+    class Meta:
+        model = Rent
+        fields = ('id', 'borrow_date', 'return_date',
+                  'is_returned', 'price_per_day', 'request', 'total_price'
+        )
+
+
 class UpdateRentSerializer(ModelSerializer):    
     
     def update(self, instance, validated_data):
@@ -123,14 +137,3 @@ class UpdateRentSerializer(ModelSerializer):
     class Meta:
         model = Rent
         fields = ('is_returned',)
-
-
-class RentSerializer(ModelSerializer):
-
-    request = GetRequestSerializer()
-
-    class Meta:
-        model = Rent
-        fields = ('id', 'borrow_date', 'return_date',
-                  'is_returned', 'price_per_day', 'request'
-        )

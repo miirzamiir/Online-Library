@@ -1,5 +1,5 @@
 from django_filters.rest_framework import FilterSet
-from .models import Author, Book
+from .models import Author, Book, Rent
 
 class AuthorFilter(FilterSet):
     
@@ -25,4 +25,13 @@ class BookFilter(FilterSet):
             'unit_price' :['gt', 'lt'],
             'price_per_day' :['gt', 'lt'],
             'date_of_publish' : ['exact']
+        }
+
+
+class RentFilter(FilterSet):
+
+    class Meta:
+        model = Rent
+        fields = {
+            'is_returned' : ['exact'],
         }
