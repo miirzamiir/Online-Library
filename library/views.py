@@ -4,11 +4,11 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from .filters import AuthorFilter, BookFilter
-from .models import Author, Book, Category, Publisher, Request
+from .models import Author, Book, Category, Publisher, Rent, Request
 from .permissions import AdminUserCantPOST, IsAdminUserOrReadOnly
 from .serializers import AdminRequestSerializer, AuthorSerializer, BookSerializer, CategorySerializer,\
-                         GetRequestSerializer, PublisherSerializer, RequestSerializer,\
-                         RetrieveBookSerializer
+                         GetRequestSerializer, PublisherSerializer, RentSerializer, RequestSerializer,\
+                         RetrieveBookSerializer, UpdateRentSerializer
 
 class AuthorViewSet(ModelViewSet):
     
@@ -76,3 +76,24 @@ class RequestViewSet(ModelViewSet):
             return RequestSerializer
 
         return GetRequestSerializer
+
+
+class RentViewSet(ModelViewSet):
+
+    http_method_names = ['get', 'patch']
+    serializer_class = RentSerializer
+    permission_classes = [IsAuthenticated, IsAdminUserOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Rent.objects.all()
+        if self.request.user.is_superuser:
+            return queryset
+
+        return queryset.filter(request__user=self.request.user)
+
+    def get_serializer_class(self):
+        
+        if self.request.method == 'PATCH':
+            return UpdateRentSerializer
+        
+        return RentSerializer

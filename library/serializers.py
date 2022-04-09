@@ -1,3 +1,4 @@
+from datetime import datetime
 from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
@@ -70,13 +71,16 @@ class RequestSerializer(ModelSerializer):
 
     class Meta:
         model = Request
-        fields = ('id', 'book', 'date')
+        fields = ['id', 'book', 'date']
         read_only_fields = ('user', 'date')
 
 
 class GetRequestSerializer(RequestSerializer):
 
     book = serializers.HyperlinkedRelatedField(view_name='book-detail', read_only=True)
+
+    class Meta(RequestSerializer.Meta):
+      RequestSerializer.Meta.fields.append('user')
 
 
 class AdminRequestSerializer(ModelSerializer):
@@ -101,3 +105,32 @@ class AdminRequestSerializer(ModelSerializer):
         extra_kwargs = {
             'rented' : {'write_only' : True}
         }
+
+
+class UpdateRentSerializer(ModelSerializer):    
+    
+    def update(self, instance, validated_data):
+        validated_data['return_date'] = datetime.now()
+        return super().update(instance, validated_data)
+
+    def validate_is_returned(self, value):
+        if value == False:
+            raise ValueError("can't turn is_returned back to False!")
+
+        return value
+
+        
+    class Meta:
+        model = Rent
+        fields = ('is_returned',)
+
+
+class RentSerializer(ModelSerializer):
+
+    request = GetRequestSerializer()
+
+    class Meta:
+        model = Rent
+        fields = ('id', 'borrow_date', 'return_date',
+                  'is_returned', 'price_per_day', 'request'
+        )
