@@ -56,7 +56,7 @@ class Book(models.Model):
     categories = models.ManyToManyField(to=Category)
     authors = models.ManyToManyField(to=Author, related_name='authors')
     translators = models.ManyToManyField(to=Author, related_name='translators', blank=True)
-    inventory = models.PositiveSmallIntegerField()
+    inventory = models.PositiveSmallIntegerField(validators=[MinValueValidator(0)])
     description = models.TextField(null=True)
     rating = models.DecimalField(null=True,
                                  max_digits=3,
@@ -77,7 +77,7 @@ class Book(models.Model):
     date_of_publish = models.PositiveSmallIntegerField()
     
     def __str__(self) -> str:
-        return self.name
+        return self.title
 
 
 class Request(models.Model):
@@ -85,20 +85,12 @@ class Request(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     book = models.ForeignKey(to=Book, on_delete=models.DO_NOTHING)
     date = models.DateTimeField(auto_now=True)
-    return_date = models.DateField(null=True, blank=True)
-    price_per_day =  models.DecimalField(max_digits=4,
-                                 decimal_places=2,
-                                 validators=[MinValueValidator(0.00)]
-                                )
+    rented = models.BooleanField(default=False)
     
-
-
-
 
 class Rent(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
-    book = models.ForeignKey(to=Book, on_delete=models.DO_NOTHING)
+    request = models.ForeignKey(to=Request, on_delete=models.CASCADE)
     borrow_date = models.DateTimeField(default=datetime.now)
     return_date = models.DateTimeField(null=True)
     is_returned = models.BooleanField(default=False)
