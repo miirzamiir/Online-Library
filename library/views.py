@@ -4,9 +4,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.pagination import PageNumberPagination
 from .filters import AuthorFilter, BookFilter, RentFilter
-from .models import Author, Book, Category, Publisher, Rent, Request
+from .models import Author, Book, BookImage, Category, Publisher, Rent, Request
 from .permissions import AdminUserCantPOST, IsAdminUserOrReadOnly
-from .serializers import AdminRequestSerializer, AuthorSerializer, BookSerializer, CategorySerializer,\
+from .serializers import AdminRequestSerializer, AuthorSerializer, BookImageSerializer, BookSerializer, CategorySerializer,\
                          GetRequestSerializer, PublisherSerializer, RentSerializer, RequestSerializer,\
                          RetrieveBookSerializer, UpdateRentSerializer
 
@@ -54,6 +54,17 @@ class BookViewSet(ModelViewSet):
             return RetrieveBookSerializer
         
         return BookSerializer
+
+
+class BookImageViewSet(ModelViewSet):
+
+    serializer_class = BookImageSerializer
+
+    def get_queryset(self):
+        return BookImage.objects.filter(book=self.kwargs['book_pk'])
+
+    def get_serializer_context(self):
+        return {'book_id' : self.kwargs['book_pk']}
 
 
 class RequestViewSet(ModelViewSet):

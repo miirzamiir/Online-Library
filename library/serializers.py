@@ -3,7 +3,7 @@ from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from django.db.models import F
-from .models import Author, Book, Category, Publisher, Rent, Request
+from .models import Author, Book, BookImage, Category, Publisher, Rent, Request
 
 
 class AuthorSerializer(ModelSerializer):
@@ -29,14 +29,27 @@ class CategorySerializer(ModelSerializer):
         fields = ('id', 'name', 'description')
 
 
+class BookImageSerializer(ModelSerializer):
+
+    def create(self, validated_data):
+        validated_data['book_id'] = self.context.get('book_id')
+        return super().create(validated_data)
+
+    class Meta:
+        model = BookImage
+        fields = ('id', 'image')
+
+
 class BookSerializer(ModelSerializer):
+
+    images = BookImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Book
         fields = (
                 'id', 'title', 'categories', 'publisher', 'authors',
                 'translators', 'inventory', 'rating','unit_price',
-                'price_per_day', 'date_of_publish', 'description'
+                'price_per_day', 'date_of_publish', 'description', 'images'
             )
 
 

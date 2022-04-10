@@ -79,6 +79,11 @@ class Book(models.Model):
         return self.title
 
 
+class BookImage(models.Model):
+    book = models.ForeignKey(to=Book, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='library/books')
+
+
 class Request(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
