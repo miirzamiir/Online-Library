@@ -41,7 +41,7 @@ class CategoryViewSet(ModelViewSet):
 
 class BookViewSet(ModelViewSet):
 
-    queryset = Book.objects.select_related('publisher').prefetch_related('authors', 'translators', 'categories').all()
+    queryset = Book.objects.select_related('publisher').prefetch_related('authors', 'translators', 'categories', 'images').all()
     permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (SearchFilter, DjangoFilterBackend)
     search_fields = ('title', 'authors__name', 'translators__name', 'publisher__name')
