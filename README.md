@@ -1,24 +1,26 @@
 #  Online Library
-***
+An online library management system api written with python, django and DRF.
 
-This is a training project which is an implementation of an online library API. The installation instructions are written bellow.
+# Tools
+  - python
+  - django
+  - django rest framework
+  - docker
+  - postgresql(as default database)
 
-## installation
-- - - 
+
+# Installation
  after cloning project do these instructions step by step.
-###  1-  create a virtual environment and activate it.
+After cloning project, you can simply run this project by following instructions bellow.
+
+### 1- environment variables.
+create a `.env` file and set value for `SECRET_KEY`, `POSTGRES_NAME`, `POSTGRES_USER` and `POSTGRES_PASSWORD` keys.
+### 2- install docker and docker-compose.
+you can install docker from [here](https://docs.docker.com/engine/install/).
+
+### 3- docker commands.
+open a terminal and run command bellow.
 ```
-python -m venv ./venv
-source ./venv/bin/activate 
+docker-compose up
 ```
-### 2- create a sqlite file.
-``` touch lib.sqlite3 ```  
-  
-you can also use other database engines but you have to change `OnlineLibrary/settings.py` module.
- 
-### 3- install requirements.
-``` pip install -r ./requirements.txt ```
-### 4- run migrations.
-``` python manage.py migrate```
-### 5- start server and use the api.
-``` python manage.py runserver ```
+this command will run project on `localhost:80` and you will be able to visit that by your favorite browser.
